@@ -18,6 +18,29 @@ class Day extends React.Component {
     this.finishEditing = this.finishEditing.bind(this)
   }
 
+  showStockBox () {
+    this.setState({
+      showInput: true
+    })
+  }
+
+  hideStockBox () {
+      this.setState({
+      showInput: false
+    })
+  }
+
+  makeEditable () {
+    this.setState({
+      isEditable: true
+    })
+  }
+
+  finishEditing (event) {
+    if (event.key === 'Enter')
+      this.props.updateStockPrice(event, this.props.date, event.target.value, false)
+  }
+
   render () {
     let value = '', isBeingEdited = true
 
