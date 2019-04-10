@@ -8,26 +8,49 @@ class Day extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      showInput: false
+      showInput: false,
+      isEditable: true
     }
+    this.textInput = React.createRef();
+    this.showStockBox = this.showStockBox.bind(this)
+    this.hideStockBox = this.hideStockBox.bind(this)
+    this.makeEditable = this.makeEditable.bind(this)
+    this.finishEditing = this.finishEditing.bind(this)
   }
 
   render () {
+    let value = '', isBeingEdited = true
+
+    for (let item of this.props.stockDetails) {
+      if ( !(item.date > this.props.date) && !(item.date < this.props.date)) {
+        value = item.stockPrice
+        this.textInput = value
+        isBeingEdited = item.isBeingEdited
+      }
+    }
+
     return (
       <div className="dayWrapper">
         <div className="dayValue">{ this.props.label }</div>
-        <div className="stockPriceHolder" style={{display:'none'}}>
-          <input type="text" className="stockBox" placeholder="Stock"/>
+        <div className="stockPriceHolder"
+          style={{display: (value.length > 0 || this.state.showInput) ? true : 'none'}}
+          onClick={this.makeEditable}>
+          <input type="text"
+            ref={this.textInput}
+            className={"stockBox " + (isBeingEdited ? "inEditing" : "")}
+            placeholder="Stock" disabled={!isBeingEdited} value={value}
+            onKeyDown={this.finishEditing}
+            onChange={(event) => this.props.updateStockPrice(event, this.props.date, event.target.value)}/>
         </div>
-        <button className="addButton button" title="Add Stock Price">
-          <img src={addIcon} alt="ADD" className="addIcon"/>
+        <button className="addButton buttons" title="Add Stock Price" onClick={this.showStockBox} style={{display: value.length === 0 ? 'initial' : 'none'}}>
+          <img src={addIcon} alt="ADD" className="addIcon icons"/>
         </button>
-
+        <button className="removeButton buttons" title="Remove Stock Price" onClick={() => this.props.removeStockPrice(this.props.date)} style={{display: value.length > 0 ? 'initial' : 'none'}}>
+          <img src={removeIcon} alt="REMOVE" className="removeIcon icons"/>
+        </button>
       </div>
     )
   }
 }
-// <button className="removeButton button" title="Remove Stock Price">
-//   <img src={removeIcon} alt="REMOVE" className="removeIcon"/>
-// </button>
+
 export default Day
