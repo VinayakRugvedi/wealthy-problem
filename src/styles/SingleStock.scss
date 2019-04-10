@@ -1,0 +1,25 @@
+@import url('https://fonts.googleapis.com/css?family=ABeeZee|Lato:300i');
+
+.stockWrapper {
+  width: 100vw;
+  height: 100vh;
+  background-color: black;
+  margin: 0;
+
+  .stockHeading {
+    font-size: 2vw;
+    font-family: 'ABeeZee', sans-serif;
+    color: white;
+    text-align: center;
+    // border: 2px solid white;
+    padding: 1.5vw;
+    padding-bottom: 1vw;
+  }
+
+  .stockSubheading {
+    font-size: 1.5vw;
+    font-family: 'Lato', sans-serif;
+    color: white;
+    text-align: center;
+  }
+}
