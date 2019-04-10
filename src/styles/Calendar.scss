@@ -1,4 +1,39 @@
 .calendarWrapper {
+  display: inline-block;
   width: 50%;
-  height: 50vh;
+  height: 100%;
+  border: 1px solid white;
+
+  .rbc-toolbar, .rbc-header {
+    background-color: black;
+    color: white;
+    font-family: 'ABeeZee', sans-serif;
+
+    button {
+      color: white;
+      font-family: 'ABeeZee', sans-serif;
+
+      &:hover {
+        background-color: white;
+        color: black;
+      }
+
+      &:focus {
+        background-color: white;
+        color: black;
+      }
+    }
+  }
+
+  .rbc-header {
+    padding: 0.2vw;
+  }
+
+  .dayInCalendar {
+    background-color: magenta;
+  }
+
+  .dayTile {
+    box-shadow: inset 0px 0px 30px 3px red;
+  }
 }
