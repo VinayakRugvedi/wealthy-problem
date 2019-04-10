@@ -1,7 +1,6 @@
 import React from 'react'
 
-import ReactCalendar from 'react-calendar'
-import RBC from 'react-big-calendar'
+import ReactCalendar from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import moment from 'moment'
 import '../styles/Calendar.scss'
@@ -19,7 +18,7 @@ class Calendar extends React.Component {
   render () {
     return (
       <div className="calendarWrapper">
-        <RBC
+        <ReactCalendar
         localizer={localizer}
         events={this.state.priceEvents}
         startAccessor="start"
