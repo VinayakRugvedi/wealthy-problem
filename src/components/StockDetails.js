@@ -85,7 +85,6 @@ class StockDetails extends React.Component {
           </div>
         )
       }
-
       </div>
     )
   }
