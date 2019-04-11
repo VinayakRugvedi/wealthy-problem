@@ -17,7 +17,6 @@ class Day extends React.Component {
     this.hideStockBox = this.hideStockBox.bind(this)
     this.makeEditable = this.makeEditable.bind(this)
     this.finishEditing = this.finishEditing.bind(this)
-    this.updateValue = this.updateValue.bind(this)
   }
 
   showStockBox () {
@@ -38,10 +37,19 @@ class Day extends React.Component {
     })
   }
 
-  updateValue (event) {
-    this.setState({
-      value: event.target.value
-    })
+  updateValue = (event, deleteValue = false) => {
+    console.log(event.target.value, 'In Onchange')
+    if (deleteValue)
+      this.setState({
+        value: '',
+        showInput: false
+      }, () => {
+        this.props.removeStockPrice(this.props.date)
+      })
+    else
+      this.setState({
+        value: event.target.value
+      })
   }
 
   finishEditing (event) {
@@ -56,7 +64,6 @@ class Day extends React.Component {
     for (let item of this.props.stockDetails) {
       if ( !(item.date > this.props.date) && !(item.date < this.props.date)) {
         value = item.stockPrice
-        console.log(value)
         isBeingEdited = item.isBeingEdited
       }
     }
@@ -77,10 +84,10 @@ class Day extends React.Component {
             onChange={this.updateValue}
             />
         </div>
-        <button className="addButton buttons" title="Add Stock Price" onClick={this.showStockBox} style={{display: value.length === 0 ? 'initial' : 'none'}}>
+        <button className="addButton buttons" title="Add Stock Price" onClick={this.showStockBox} style={{display: trueValue.length === 0 ? 'initial' : 'none'}}>
           <img src={addIcon} alt="ADD" className="addIcon icons"/>
         </button>
-        <button className="removeButton buttons" title="Remove Stock Price" onClick={() => this.props.removeStockPrice(this.props.date)} style={{display: value.length > 0 ? 'initial' : 'none'}}>
+        <button className="removeButton buttons" title="Remove Stock Price" onClick={(event) => this.updateValue(event, true)} style={{display: trueValue.length > 0 ? 'initial' : 'none'}}>
           <img src={removeIcon} alt="REMOVE" className="removeIcon icons"/>
         </button>
       </div>
