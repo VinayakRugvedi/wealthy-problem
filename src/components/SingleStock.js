@@ -14,7 +14,8 @@ class SingleStock extends React.Component {
     super()
     this.state = {
       stockDetails: [],
-      sortedStockDetails: []
+      sortedStockDetails: [],
+      dateToId: {}
     }
   }
 
@@ -27,16 +28,19 @@ class SingleStock extends React.Component {
     .then(response => response.json())
     .then(records => {
       let stockDetails = []
+      let dateToId = {}
+
       for(let item of records.records) {
         if (Object.keys(item.fields).length !== 0) {
+          let date = moment(item.fields.Date).toDate()
+          dateToId[date] = item.id
           stockDetails.push({
-            date: moment(item.fields.Date).toDate(),
+            date,
             stockPrice: String(item.fields.Price),
             isBeingEdited: false
           })
         }
       }
-
 
       let sortedStockDetails =
       stockDetails.sort((dateObj1, dateObj2) => {
@@ -48,9 +52,11 @@ class SingleStock extends React.Component {
       console.log(sortedStockDetails)
       this.setState({
         stockDetails,
-        sortedStockDetails
+        sortedStockDetails,
+        dateToId
       })
     })
+    .catch(console.log)
   }
 
   updateStockDetails = (stockObject) => {
@@ -90,10 +96,31 @@ class SingleStock extends React.Component {
         return 0;
       })
 
-      this.setState({
-        sortedStockDetails,
-        stockDetails: stockDetailsCopy
+      fetch(apiURL, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${airtableSecret.apiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+        fields: {
+          Date: moment(date).format('M/D/YYYY'),
+          Price: stockPrice * 1
+          }
+        })
       })
+      .then(response => response.json())
+      .then((success) => {
+        console.log(success, 'post')
+        let dateToId = this.state.dateToId
+        dateToId[date] = success.id
+        this.setState({
+          sortedStockDetails,
+          stockDetails: stockDetailsCopy,
+          dateToId
+        })
+      })
+      .catch(console.log)
     } else
           this.setState({
             stockDetails: stockDetailsCopy
@@ -117,10 +144,22 @@ class SingleStock extends React.Component {
       }
     }
 
-    this.setState({
-      sortedStockDetails: sortedStockDetailsCopy,
-      stockDetails: stockDetailsCopy
+    fetch(apiURL + `/${this.state.dateToId[date]}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${airtableSecret.apiKey}`
+      }
     })
+      .then(response => response.json())
+      .then(success => {
+        let dateToIdCopy = this.state.dateToId
+        delete dateToIdCopy[date]
+        this.setState({
+          sortedStockDetails: sortedStockDetailsCopy,
+          stockDetails: stockDetailsCopy,
+          dateToId: dateToIdCopy
+        })
+      })
   }
 
   render () {
