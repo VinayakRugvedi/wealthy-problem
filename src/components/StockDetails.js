@@ -4,6 +4,7 @@ import '../styles/StockDetail.scss'
 import infinity from '../assets/infinityRed.svg'
 
 import moment from 'moment'
+import Highchart from './Highchart'
 
 class StockDetails extends React.Component {
   constructor (props) {
@@ -46,10 +47,11 @@ class StockDetails extends React.Component {
 
   render () {
     let stockAnalysis = {}
+    let newOptions
     if (this.props.stockDetails.length >= 2) {
       stockAnalysis = this.getStockAnalysis()
     }
-    console.log(stockAnalysis)
+
     return (
       <div className="stockDetailsWrapper">
       {
@@ -75,6 +77,7 @@ class StockDetails extends React.Component {
             </div>
           </div>
           <div className="stockTrendHolder">
+            <Highchart stockDetails={this.props.stockDetails}/>
           </div>
           </>
         ) :
