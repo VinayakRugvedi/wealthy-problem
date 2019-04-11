@@ -5,16 +5,18 @@
   // padding: 1vw;
 
   .maxProfitHolder {
-    width: 45%;
-    min-height: 55%;
+    display: inline-block;
+    width: 50%;
+    min-height: 35%;
     margin: 1vw;
     color: white;
-    // border-radius: 50%;
+    // border-radius: 30%;
+    padding: 1vw;
     position: relative;
     box-shadow: inset 0px 0px 200px 0px red;
 
     .maxProfit {
-      width: 80%;
+      width: 100%;
       font-size: 2vw;
       font-family: 'ABeeZee', sans-serif;
       text-align: center;
@@ -44,6 +46,31 @@
       font-size: 2vw;
       font-family: 'ABeeZee', sans-serif;
     }
-
   }
+}
+
+.stockDetailsWrapper {
+  .stockBuySellDateHolder {
+    margin-right: 1vw;
+    margin-top: 2.3vw;
+    width: fit-content;
+    // height: 20%;
+    // border: 2px solid white;
+    color: white;
+    font-size: 2vw;
+    float: right;
+    font-family: 'ABeeZee', sans-serif;
+
+    .actualDate {
+      margin-left: 3vw;
+      color: blue;
+    }
+
+    .seperator {
+      // border: 2px solid white;
+      text-align: center;
+      padding-bottom: 1vw;
+    }
+  }
+
 }
