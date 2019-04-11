@@ -1,4 +1,5 @@
 import React from 'react'
+// import ReactDOM from
 
 import '../styles/Day.scss'
 import addIcon from '../assets/addIcon.svg'
@@ -9,13 +10,14 @@ class Day extends React.Component {
     super(props)
     this.state = {
       showInput: false,
-      isEditable: true
+      isEditable: true,
+      value: ''
     }
-    this.textInput = React.createRef();
     this.showStockBox = this.showStockBox.bind(this)
     this.hideStockBox = this.hideStockBox.bind(this)
     this.makeEditable = this.makeEditable.bind(this)
     this.finishEditing = this.finishEditing.bind(this)
+    this.updateValue = this.updateValue.bind(this)
   }
 
   showStockBox () {
@@ -36,34 +38,44 @@ class Day extends React.Component {
     })
   }
 
+  updateValue (event) {
+    this.setState({
+      value: event.target.value
+    })
+  }
+
   finishEditing (event) {
     if (event.key === 'Enter')
-      this.props.updateStockPrice(event, this.props.date, event.target.value, false)
+      this.props.updateStockPrice(event, this.props.date, this.state.value, false)
   }
 
   render () {
-    let value = '', isBeingEdited = true
+    let value = ''
+    let isBeingEdited = true
 
     for (let item of this.props.stockDetails) {
       if ( !(item.date > this.props.date) && !(item.date < this.props.date)) {
         value = item.stockPrice
-        this.textInput = value
+        console.log(value)
         isBeingEdited = item.isBeingEdited
       }
     }
+
+    let trueValue = (value.length === 0 || value === undefined) ? this.state.value : value
 
     return (
       <div className="dayWrapper">
         <div className="dayValue">{ this.props.label }</div>
         <div className="stockPriceHolder"
-          style={{display: (value.length > 0 || this.state.showInput) ? true : 'none'}}
-          onClick={this.makeEditable}>
+          style={{display: (value.length > 0 || this.state.showInput) ? true : 'none'}}>
           <input type="text"
+            id={10}
             ref={this.textInput}
             className={"stockBox " + (isBeingEdited ? "inEditing" : "")}
-            placeholder="Stock" disabled={!isBeingEdited} value={value}
-            onKeyDown={this.finishEditing}
-            onChange={(event) => this.props.updateStockPrice(event, this.props.date, event.target.value)}/>
+            placeholder="Stock" disabled={!isBeingEdited}
+            onKeyDown={this.finishEditing} value={trueValue} autoFocus="autoFocus"
+            onChange={this.updateValue}
+            />
         </div>
         <button className="addButton buttons" title="Add Stock Price" onClick={this.showStockBox} style={{display: value.length === 0 ? 'initial' : 'none'}}>
           <img src={addIcon} alt="ADD" className="addIcon icons"/>
