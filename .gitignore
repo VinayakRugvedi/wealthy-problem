@@ -5,6 +5,9 @@
 /.pnp
 .pnp.js
 
+# secrets
+/airtableSecret.js
+
 # testing
 /coverage
 
