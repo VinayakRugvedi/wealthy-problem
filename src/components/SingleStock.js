@@ -2,34 +2,69 @@ import React from 'react'
 
 import '../styles/SingleStock.scss'
 import Calendar from './Calendar'
+import moment from 'moment'
+import StockDetails from './StockDetails'
+
+import airtableSecret from '../airtableSecret'
+
+const apiURL = 'https://api.airtable.com/v0/appfjwy2Z3RFgz7qm/Table%201'
 
 class SingleStock extends React.Component {
   constructor() {
     super()
     this.state = {
-      stockDetails: []
+      stockDetails: [],
+      sortedStockDetails: []
     }
+  }
+
+  componentDidMount () {
+    fetch(apiURL, {
+      headers: {
+        'Authorization': `Bearer ${airtableSecret.apiKey}`
+      }
+    })
+    .then(response => response.json())
+    .then(records => {
+      let stockDetails = []
+      for(let item of records.records) {
+        if (Object.keys(item.fields).length !== 0) {
+          stockDetails.push({
+            date: moment(item.fields.Date).toDate(),
+            stockPrice: String(item.fields.Price),
+            isBeingEdited: false
+          })
+        }
+      }
+
+
+      let sortedStockDetails =
+      stockDetails.sort((dateObj1, dateObj2) => {
+              if (dateObj1.date > dateObj2.date) return 1;
+              if (dateObj1.date < dateObj2.date) return -1;
+              return 0;
+            })
+
+      console.log(sortedStockDetails)
+      this.setState({
+        stockDetails,
+        sortedStockDetails
+      })
+    })
   }
 
   updateStockDetails = (stockObject) => {
     let existingDetails = this.state.stockDetails
     existingDetails.push(stockObject)
-    let sortedExistingDetails = this.insertionSort(existingDetails)
-    // console.log(existingDetails, 'sorrrrr')
+    let sortedExistingDetails =
+    existingDetails.sort((dateObj1, dateObj2) => {
+            if (dateObj1.date > dateObj2.date) return 1;
+            if (dateObj1.date < dateObj2.date) return -1;
+            return 0;
+          })
     this.setState({
       stockDetails: sortedExistingDetails
     })
-  }
-
-  insertionSort = (stockObjects) => {
-    for (let i = 0; i < stockObjects.length; i++) {
-      let value = stockObjects[i].date
-      for (var j = i - 1; j > -1 && stockObjects[j].date > value; j--) {
-        stockObjects[j + 1] = stockObjects[j]
-      }
-      stockObjects[j + 1] = value
-    }
-    return stockObjects
   }
 
   updateStockPrice = (event, date, stockPrice, editing = true) => {
@@ -45,25 +80,45 @@ class SingleStock extends React.Component {
     }
 
     if (!isFound) stockDetailsCopy.push({ date, stockPrice, isBeingEdited: editing})
-    this.setState({
-      stockDetails: stockDetailsCopy
-    })
+
+    let sortedStockDetails = stockDetailsCopy.filter((stockObject) => !stockObject.isBeingEdited)
+    console.log(sortedStockDetails)
+    if (!editing) {
+      sortedStockDetails.sort((dateObj1, dateObj2) => {
+        if (dateObj1.date > dateObj2.date) return 1;
+        if (dateObj1.date < dateObj2.date) return -1;
+        return 0;
+      })
+
+      this.setState({
+        sortedStockDetails,
+        stockDetails: stockDetailsCopy
+      })
+    } else
+          this.setState({
+            stockDetails: stockDetailsCopy
+          })
   }
 
   removeStockPrice = (date) => {
-    console.log('In herrrrr')
     let stockDetailsCopy = this.state.stockDetails
-    console.log(stockDetailsCopy)
     for (let i = 0; i < stockDetailsCopy.length; i++) {
-      // console.log(date)
       if (!(date > stockDetailsCopy[i].date) && !(date < stockDetailsCopy[i].date)) {
-        console.log('trueeeeee');
         stockDetailsCopy.splice(i, 1)
-        console.log(stockDetailsCopy)
         break
       }
     }
+
+    let sortedStockDetailsCopy = this.state.sortedStockDetails
+    for (let i = 0; i < sortedStockDetailsCopy.length; i++) {
+      if (!(date > sortedStockDetailsCopy[i].date) && !(date < sortedStockDetailsCopy[i].date)) {
+        sortedStockDetailsCopy.splice(i, 1)
+        break
+      }
+    }
+
     this.setState({
+      sortedStockDetails: sortedStockDetailsCopy,
       stockDetails: stockDetailsCopy
     })
   }
@@ -80,6 +135,7 @@ class SingleStock extends React.Component {
           <Calendar updateStockDetails={this.updateStockDetails} stockDetails={this.state.stockDetails} updateStockPrice={this.updateStockPrice}
           removeStockPrice={this.removeStockPrice}/>
           <div className="stockDetails">
+            <StockDetails stockDetails={this.state.sortedStockDetails}/>
           </div>
         </div>
 
