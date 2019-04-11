@@ -1,6 +1,7 @@
 import React from 'react'
 
 import '../styles/SingleStock.scss'
+import infinity from '../assets/infinityRed.svg'
 import Calendar from './Calendar'
 import moment from 'moment'
 import StockDetails from './StockDetails'
@@ -15,7 +16,8 @@ class SingleStock extends React.Component {
     this.state = {
       stockDetails: [],
       sortedStockDetails: [],
-      dateToId: {}
+      dateToId: {},
+      isFetchComplete: false
     }
   }
 
@@ -53,7 +55,8 @@ class SingleStock extends React.Component {
       this.setState({
         stockDetails,
         sortedStockDetails,
-        dateToId
+        dateToId,
+        isFetchComplete: true
       })
     })
     .catch(console.log)
@@ -165,19 +168,30 @@ class SingleStock extends React.Component {
   render () {
     return (
       <div className="stockWrapper">
-        <h1 className="stockHeading"> Stock Stock Everywhere, So, lets Stalk! </h1>
-        <h3 className="stockSubheading">
-          “Rule number one: Don’t lose money. Rule number two: Don’t forget rule number one.”
-        </h3>
+      {
+        this.state.isFetchComplete ?
+          (
+            <>
+            <h1 className="stockHeading"> Stock Stock Everywhere, So, lets Stalk! </h1>
+            <h3 className="stockSubheading">
+              “Rule number one: Don’t lose money. Rule number two: Don’t forget rule number one.”
+            </h3>
 
-        <div className="stockInsights">
-          <Calendar updateStockDetails={this.updateStockDetails} stockDetails={this.state.stockDetails} updateStockPrice={this.updateStockPrice}
-          removeStockPrice={this.removeStockPrice}/>
-          <div className="stockDetails">
-            <StockDetails stockDetails={this.state.sortedStockDetails}/>
-          </div>
-        </div>
-
+            <div className="stockInsights">
+              <Calendar updateStockDetails={this.updateStockDetails} stockDetails={this.state.stockDetails} updateStockPrice={this.updateStockPrice}
+              removeStockPrice={this.removeStockPrice}/>
+              <div className="stockDetails">
+                <StockDetails stockDetails={this.state.sortedStockDetails}/>
+              </div>
+            </div>
+            </>
+          ) : (
+            <div className="stockLoading">
+              <img src={infinity} alt="LOADING" className="stockLoadingIcon"/>
+              <p> B . E . L . I . E . V . E </p>
+            </div>
+          )
+      }
       </div>
     )
   }
