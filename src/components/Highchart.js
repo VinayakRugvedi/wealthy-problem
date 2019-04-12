@@ -2,6 +2,8 @@ import React from 'react'
 import Highcharts from 'highcharts'
 import ReactHighcharts from 'highcharts-react-official'
 
+import '../styles/HighChart.scss'
+
 import moment from 'moment'
 
 const options = {
@@ -43,8 +45,8 @@ class Highchart extends React.Component {
     let dataArray = this.getDataArray()
     options.series[0].data = dataArray
     return (
-      <div className="highchartWrapper">
-        <ReactHighcharts highcharts={Highcharts} options={options} ref={ this.chartRef } oneToOne={true} updateArgs={[true, true, true]}/>
+      <div className="highchartWrapper" style={{height: '100%'}}>
+        <ReactHighcharts highcharts={Highcharts} options={options} ref={ this.chartRef } oneToOne={true} updateArgs={[true, true, true]} containerProps={{className: "highchart"}}/>
       </div>
     )
   }
