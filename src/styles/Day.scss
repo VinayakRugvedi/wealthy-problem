@@ -24,13 +24,14 @@
     background-color: black;
     overflow: hidden;
     cursor: pointer;
+    position: relative;
 
     .icons {
       display: block;
-      height: 170%;
-      border: 2px solid white;
-      margin: 0 auto;
-      transform: translateX(-30%) + translateY(-20%);
+      position: absolute;
+      height: 2.0vw;
+      right: -25%;
+      top: -30%;
     }
   }
 
