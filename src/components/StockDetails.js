@@ -21,21 +21,20 @@ class StockDetails extends React.Component {
       sellDate:  stockDetails[1].date
     }
 
-    console.log(stockAnalysis)
+    let maxDiff = stockDetails[1].stockPrice - stockDetails[0].stockPrice
+    let minElement = stockDetails[0]
 
-    let maxDiff = stockAnalysis.maxProfitData.maxProfit
-    for (let i = 0; i < stockDetails.length; i++) {
-      for (let j = i+1; j < stockDetails.length; j++) {
-        if (stockDetails[j].stockPrice - stockDetails[i].stockPrice > maxDiff) {
-          maxDiff = stockDetails[j].stockPrice - stockDetails[i].stockPrice
-          stockAnalysis.maxProfitData.maxProfit = maxDiff
-          stockAnalysis.maxProfitData.buyDate = stockDetails[i].date
-          stockAnalysis.maxProfitData.sellDate = stockDetails[j].date
-        }
+    for (let i = 1; i < stockDetails.length; i++) {
+      if ((stockDetails[i].stockPrice - minElement.stockPrice) > maxDiff) {
+        maxDiff = stockDetails[i].stockPrice - minElement.stockPrice
+        stockAnalysis.maxProfitData.maxProfit = maxDiff
+        stockAnalysis.maxProfitData.buyDate = minElement.date
+        stockAnalysis.maxProfitData.sellDate = stockDetails[i].date
       }
+      if (stockDetails[i].stockPrice * 1 < minElement.stockPrice * 1)
+        minElement = stockDetails[i]
     }
 
-    console.log(stockAnalysis)
     stockAnalysis.message = stockAnalysis.maxProfitData.maxProfit > 0 ?
       `Profit! Profit! Profit! and the maximum profit you can fetch is : \u20B9  ${stockAnalysis.maxProfitData.maxProfit * 10}` :
       stockAnalysis.maxProfitData.maxProfit === 0 ?
